@@ -1,4 +1,4 @@
 export type ColorPairType = {
-  input: string;
-  generated: string;
+  primary: string;
+  target: string;
 };

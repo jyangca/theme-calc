@@ -1,86 +1,107 @@
-import { Container, Title } from 'components';
-import ColorBox from 'components/ColorBox/ColorBox';
-import { Flex } from 'components/common';
-import { useState } from 'react';
+import { AddButton, ColorBox, Container, ContentContainer } from 'components';
+import { Flex, Input, Title } from 'components/common';
+import { useEffect, useState } from 'react';
 import { ColorPairType } from 'types/common';
-import { getColor, getColorDistance } from 'utils/color';
+import { getColor, getColorDistance, isValidHexColor } from 'utils/color';
 
 function App() {
-  const [colorPairs, setColorPairs] = useState<
-    Array<ColorPairType & { isStandard: boolean }>
-  >([{ input: '#2e8555', generated: '#eb4034', isStandard: true }]);
+  const [primaryColor, setPrimaryColor] = useState<string>('#2e8555');
+  const [targetColor, setTargetColor] = useState<string>('#963aa6');
+  const [colorPairs, setColorPairs] = useState<Array<ColorPairType>>([
+    { primary: primaryColor, target: targetColor },
+  ]);
+
+  useEffect(() => {
+    setColorPairs((prev) => {
+      const newColorPairs = [...prev];
+      newColorPairs.forEach((colorPair) => {
+        colorPair.target = getColor(
+          targetColor,
+          getColorDistance(primaryColor, colorPair.primary),
+        );
+      });
+      return newColorPairs;
+    });
+  }, [targetColor, primaryColor]);
 
   const handleAddButtonClick = () => {
     setColorPairs((prev) => [
       ...prev,
-      { input: '', generated: '', isStandard: false },
+      { primary: primaryColor, target: targetColor },
     ]);
   };
 
   const handleChangeColorInput = (
-    target: 'input' | 'generated',
+    event: React.FormEvent<HTMLInputElement>,
     index: number,
-    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const { value } = e.target;
+    const { value } = event.target as HTMLInputElement;
     setColorPairs((prev) => {
       const newColorPairs = [...prev];
-      newColorPairs[index][target] = value;
+      newColorPairs[index].primary = value;
+      newColorPairs[index].target = getColor(
+        targetColor,
+        getColorDistance(primaryColor, value),
+      );
       return newColorPairs;
     });
   };
 
-  const handleOnClickColorBox = (index: number) => {
-    console.log(index);
-    setColorPairs((prev) => {
-      const newColorPairs = [...prev];
-      newColorPairs.forEach((colorPair, i) => {
-        colorPair.isStandard = i === index;
-      });
-      return newColorPairs;
-    });
+  const handleChangePrimaryColor = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { value } = event.target;
+    setPrimaryColor(value);
   };
 
-  const primaryDistance = getColorDistance(
-    colorPairs.filter((pair) => pair.isStandard)[0].input,
-    colorPairs.filter((pair) => pair.isStandard)[0].generated,
-  );
+  const handleChangeTargetColor = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { value } = event.target;
+    setTargetColor(value);
+  };
 
   return (
-    <Container>
-      <Title>Theme Calculator</Title>
-      <Flex direction="ROW" gap={{ column: 16 }}>
-        {colorPairs.map((colorPair, index) => (
-          <Flex direction="COLUMN" gap={{ row: 8 }}>
-            <ColorBox
-              onClick={() => handleOnClickColorBox(index)}
-              color={colorPair.input}
-              isStandard={colorPair.isStandard}
-            />
-            <input
-              onChange={(e) => handleChangeColorInput('input', index, e)}
-              value={colorPair.input}
-            />
-            <ColorBox
-              onClick={() => handleOnClickColorBox(index)}
-              color={
-                colorPair.isStandard
-                  ? colorPair.generated
-                  : getColor(
-                      colorPairs.filter((pair) => pair.isStandard)[0].generated,
-                      getColorDistance(
-                        colorPairs.filter((pair) => pair.isStandard)[0].input,
-                        colorPair.input,
-                      ),
-                    )
-              }
-              isStandard={colorPair.isStandard}
-            />
+    <Flex boxFill>
+      <Container>
+        <Title tag="h1">Theme Calculator</Title>
+        <Flex direction="COLUMN" gap={{ row: 6 }}>
+          <Title tag="h3">Standard Color</Title>
+          <Flex gap={{ column: 16 }} boxFill>
+            <Flex direction="COLUMN" gap={{ row: 6 }}>
+              <ColorBox height="60px" width="100%" color={primaryColor} />
+              <Input onChange={handleChangePrimaryColor} value={primaryColor} />
+            </Flex>
+            <Flex direction="COLUMN" gap={{ row: 6 }}>
+              <ColorBox height="60px" width="100%" color={targetColor} />
+              <Input onChange={handleChangeTargetColor} value={targetColor} />
+            </Flex>
           </Flex>
-        ))}
-      </Flex>
-      <button onClick={handleAddButtonClick}>색상 추가</button>
-    </Container>
+        </Flex>
+        <ContentContainer>
+          {colorPairs.map((colorPair, index) => (
+            <Flex direction="COLUMN" gap={{ row: 8 }}>
+              <Flex direction="COLUMN" gap={{ row: 6 }}>
+                <ColorBox color={colorPair.primary} width="100%" />
+                <Input
+                  onChange={(event) => handleChangeColorInput(event, index)}
+                  value={colorPair.primary}
+                />
+              </Flex>
+              <Flex direction="COLUMN" boxFill>
+                <ColorBox color={colorPair.target} width="100%" />
+                <Title tag="h6">
+                  {isValidHexColor(colorPair.target)
+                    ? colorPair.target
+                    : '#WRONG'}
+                </Title>
+              </Flex>
+            </Flex>
+          ))}
+        </ContentContainer>
+        <AddButton onClick={handleAddButtonClick} />
+      </Container>
+    </Flex>
   );
 }
 
