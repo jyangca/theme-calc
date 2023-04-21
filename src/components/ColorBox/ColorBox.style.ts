@@ -1,14 +1,16 @@
+import { Flex } from 'components/common';
 import styled from 'styled-components';
 
 type BoxProps = {
   color: string;
-  isStandard: boolean;
-};
-export const Box = styled.div<BoxProps>`
-  width: 100px;
-  height: 100px;
-  background-color: ${({ color }) => color || 'white'};
-  border: ${({ isStandard }) => (isStandard ? '2px solid white' : 'none')};
+  width?: string;
+  height?: string;
+} & React.HTMLAttributes<HTMLDivElement>;
+
+export const Box = styled(Flex)<BoxProps>`
+  width: ${({ width }) => width || '100px'};
+  height: ${({ height }) => height || '100px'};
+  background-color: ${({ color }) => color};
   border-radius: 8px;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
 `;
