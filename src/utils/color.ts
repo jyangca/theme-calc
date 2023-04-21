@@ -15,6 +15,5 @@ export const getColor = (primary: string, distance: number) =>
     .padStart(6, '0');
 
 export const isValidHexColor = (color: string) => {
-  console.log(/^#[0-9A-F]{6}$/i.test(color));
   return /^#[0-9A-F]{6}$/i.test(color);
 };
