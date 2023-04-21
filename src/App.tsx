@@ -1,8 +1,9 @@
 import { AddButton, ColorBox, Container, ContentContainer } from 'components';
-import { Flex, Input, Title } from 'components/common';
+import { Flex, Input, Popover, Title } from 'components/common';
 import { useEffect, useState } from 'react';
 import { ColorPairType } from 'types/common';
 import { getColor, getColorDistance, isValidHexColor } from 'utils/color';
+import { SketchPicker } from 'react-color';
 
 function App() {
   const [primaryColor, setPrimaryColor] = useState<string>('#2e8555');
@@ -31,34 +32,47 @@ function App() {
     ]);
   };
 
-  const handleChangeColorInput = (
-    event: React.FormEvent<HTMLInputElement>,
-    index: number,
-  ) => {
-    const { value } = event.target as HTMLInputElement;
+  const handleChangeColorInput = ({
+    event,
+    index,
+    color,
+  }: {
+    event?: React.FormEvent<HTMLInputElement>;
+    index: number;
+    color?: string;
+  }) => {
+    const newColor = color || (event?.target as HTMLInputElement).value;
     setColorPairs((prev) => {
       const newColorPairs = [...prev];
-      newColorPairs[index].primary = value;
+      newColorPairs[index].primary = newColor;
       newColorPairs[index].target = getColor(
         targetColor,
-        getColorDistance(primaryColor, value),
+        getColorDistance(primaryColor, newColor),
       );
       return newColorPairs;
     });
   };
 
-  const handleChangePrimaryColor = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const { value } = event.target;
-    setPrimaryColor(value);
+  const handleChangePrimaryColor = ({
+    event,
+    color,
+  }: {
+    event?: React.FormEvent<HTMLInputElement>;
+    color?: string;
+  }) => {
+    const newColor = color || (event?.target as HTMLInputElement).value;
+    setPrimaryColor(newColor);
   };
 
-  const handleChangeTargetColor = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const { value } = event.target;
-    setTargetColor(value);
+  const handleChangeTargetColor = ({
+    event,
+    color,
+  }: {
+    event?: React.FormEvent<HTMLInputElement>;
+    color?: string;
+  }) => {
+    const newColor = color || (event?.target as HTMLInputElement).value;
+    setTargetColor(newColor);
   };
 
   return (
@@ -69,12 +83,40 @@ function App() {
           <Title tag="h3">Standard Color</Title>
           <Flex gap={{ column: 16 }} boxFill>
             <Flex direction="COLUMN" gap={{ row: 6 }}>
-              <ColorBox height="60px" width="100%" color={primaryColor} />
-              <Input onChange={handleChangePrimaryColor} value={primaryColor} />
+              <Popover
+                content={
+                  <SketchPicker
+                    color={primaryColor}
+                    onChange={(color) =>
+                      handleChangePrimaryColor({ color: color.hex })
+                    }
+                  />
+                }
+              >
+                <ColorBox height="60px" width="100%" color={primaryColor} />
+              </Popover>
+              <Input
+                onChange={(event) => handleChangePrimaryColor({ event })}
+                value={primaryColor}
+              />
             </Flex>
             <Flex direction="COLUMN" gap={{ row: 6 }}>
-              <ColorBox height="60px" width="100%" color={targetColor} />
-              <Input onChange={handleChangeTargetColor} value={targetColor} />
+              <Popover
+                content={
+                  <SketchPicker
+                    color={targetColor}
+                    onChange={(color) =>
+                      handleChangeTargetColor({ color: color.hex })
+                    }
+                  />
+                }
+              >
+                <ColorBox height="60px" width="100%" color={targetColor} />
+              </Popover>
+              <Input
+                onChange={(event) => handleChangeTargetColor({ event })}
+                value={targetColor}
+              />
             </Flex>
           </Flex>
         </Flex>
@@ -82,9 +124,20 @@ function App() {
           {colorPairs.map((colorPair, index) => (
             <Flex direction="COLUMN" gap={{ row: 8 }}>
               <Flex direction="COLUMN" gap={{ row: 6 }}>
-                <ColorBox color={colorPair.primary} width="100%" />
+                <Popover
+                  content={
+                    <SketchPicker
+                      color={colorPair.primary}
+                      onChange={(color) =>
+                        handleChangeColorInput({ index, color: color.hex })
+                      }
+                    />
+                  }
+                >
+                  <ColorBox color={colorPair.primary} width="100%" />
+                </Popover>
                 <Input
-                  onChange={(event) => handleChangeColorInput(event, index)}
+                  onChange={(event) => handleChangeColorInput({ event, index })}
                   value={colorPair.primary}
                 />
               </Flex>
