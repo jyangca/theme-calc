@@ -1,9 +1,12 @@
 import { Flex } from 'components/common';
 import styled from 'styled-components';
 
-export const ContentsWrapper = styled(Flex)`
-  height: 300px;
-  padding: 1rem 2rem;
+type ContentsWrapperProps = {
+  backgroundColor: string;
+};
+export const ContentsWrapper = styled(Flex)<ContentsWrapperProps>`
+  height: 350px;
+  padding: 1rem;
   border-radius: 8px;
-  background-color: #333333;
+  background-color: ${({ backgroundColor }) => backgroundColor};
 `;
