@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Portal } from 'components/common';
 import { ChildrenWrapper, ContentBox } from './Popover.style';
+import { useSpring } from '@react-spring/web';
 
 type PopoverCloseOption = {
   contentClick: boolean;
@@ -56,17 +57,28 @@ const Popover = ({ children, content, closeOption }: PopoverProps) => {
     }
   };
 
+  const popoverSpringProps = useSpring({
+    from: { opacity: 0, transform: 'scale(0.9)' },
+    to: {
+      opacity: openPopover ? 1 : 0,
+      transform: openPopover ? 'scale(1)' : 'scale(0.9)',
+    },
+  });
+
   return (
     <>
       <ChildrenWrapper
         ref={triggerRef}
         onClick={() => setOpenPopover((prev) => !prev)}
-        style={{ width: '100%' }}
       >
         {children}
       </ChildrenWrapper>
       <Portal isOpen={openPopover} onDimClick={() => setOpenPopover(false)}>
-        <ContentBox ref={contentRef} onClick={handleContentClick}>
+        <ContentBox
+          ref={contentRef}
+          onClick={handleContentClick}
+          style={popoverSpringProps}
+        >
           {content}
         </ContentBox>
       </Portal>
