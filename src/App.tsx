@@ -6,8 +6,8 @@ import { getColor, getColorDistance, isValidHexColor } from 'utils/color';
 import { SketchPicker } from 'react-color';
 
 function App() {
-  const [primaryColor, setPrimaryColor] = useState<string>('#2e8555');
-  const [targetColor, setTargetColor] = useState<string>('#963aa6');
+  const [primaryColor, setPrimaryColor] = useState<string>('#1e0e6c');
+  const [targetColor, setTargetColor] = useState<string>('#625a12');
   const [colorPairs, setColorPairs] = useState<Array<ColorPairType>>([
     { primary: primaryColor, target: targetColor },
   ]);
