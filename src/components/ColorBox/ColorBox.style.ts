@@ -12,5 +12,5 @@ export const Box = styled(Flex)<BoxProps>`
   height: ${({ height }) => height || '100px'};
   background-color: ${({ color }) => color};
   border-radius: 8px;
-  transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 `;
