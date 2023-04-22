@@ -1,5 +1,5 @@
 import { AiOutlinePlusCircle } from 'react-icons/ai';
-import { IconWrapper } from './AddButton.style';
+import { IconWrapper } from '../button.style';
 
 type AddButtonProps = {
   onClick?: () => void;
