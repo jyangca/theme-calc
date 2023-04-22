@@ -1,9 +1,11 @@
-import { AddButton, ColorBox, Container, ContentContainer } from 'components';
+import { ColorBox, Container, ContentContainer } from 'components';
 import { Flex, Input, Popover, Title } from 'components/common';
+import { AddButton, RenameButton } from 'components/button';
 import { useEffect, useState } from 'react';
 import { ColorPairType } from 'types/common';
 import { getColor, getColorDistance, isValidHexColor } from 'utils/color';
 import { SketchPicker } from 'react-color';
+import { useTransition, animated } from '@react-spring/web';
 
 function App() {
   const [primaryColor, setPrimaryColor] = useState<string>('#1e0e6c');
@@ -11,6 +13,14 @@ function App() {
   const [colorPairs, setColorPairs] = useState<Array<ColorPairType>>([
     { primary: primaryColor, target: targetColor },
   ]);
+  const [isNamingMode, setIsNamingMode] = useState<boolean>(false);
+  const [standardName, setStandardName] = useState<ColorPairType>({
+    primary: '',
+    target: '',
+  });
+  const [colorPairsName, setColorPairsName] = useState<Array<ColorPairType>>(
+    [],
+  );
 
   useEffect(() => {
     setColorPairs((prev) => {
@@ -26,6 +36,7 @@ function App() {
   }, [targetColor, primaryColor]);
 
   const handleAddButtonClick = () => {
+    if (colorPairs.length >= 6) return;
     setColorPairs((prev) => [
       ...prev,
       { primary: primaryColor, target: targetColor },
@@ -75,6 +86,16 @@ function App() {
     setTargetColor(newColor);
   };
 
+  const handleRenameButtonClick = () => {
+    setIsNamingMode(true);
+  };
+
+  const transition = useTransition(colorPairs, {
+    from: { opacity: 0, transform: 'scale(0.9)' },
+    enter: { opacity: 1, transform: 'scale(1)' },
+    leave: { opacity: 0, transform: 'scale(0.9)' },
+  });
+
   return (
     <Flex boxFill>
       <Container>
@@ -93,7 +114,7 @@ function App() {
                   />
                 }
               >
-                <ColorBox height="60px" width="100%" color={primaryColor} />
+                <ColorBox height="60px" width="150px" color={primaryColor} />
               </Popover>
               <Input
                 onChange={(event) => handleChangePrimaryColor({ event })}
@@ -111,7 +132,7 @@ function App() {
                   />
                 }
               >
-                <ColorBox height="60px" width="100%" color={targetColor} />
+                <ColorBox height="60px" width="150px" color={targetColor} />
               </Popover>
               <Input
                 onChange={(event) => handleChangeTargetColor({ event })}
@@ -121,7 +142,7 @@ function App() {
           </Flex>
         </Flex>
         <ContentContainer>
-          {colorPairs.map((colorPair, index) => (
+          {transition((style, colorPair, _, index) => (
             <Flex direction="COLUMN" gap={{ row: 8 }}>
               <Flex direction="COLUMN" gap={{ row: 6 }}>
                 <Popover
@@ -134,7 +155,9 @@ function App() {
                     />
                   }
                 >
-                  <ColorBox color={colorPair.primary} width="100%" />
+                  <animated.div style={style}>
+                    <ColorBox color={colorPair.primary} width="150px" />
+                  </animated.div>
                 </Popover>
                 <Input
                   onChange={(event) => handleChangeColorInput({ event, index })}
@@ -142,7 +165,9 @@ function App() {
                 />
               </Flex>
               <Flex direction="COLUMN" boxFill>
-                <ColorBox color={colorPair.target} width="100%" />
+                <animated.div style={{ width: '100%', ...style }}>
+                  <ColorBox color={colorPair.target} width="150px" />
+                </animated.div>
                 <Title tag="h6">
                   {isValidHexColor(colorPair.target)
                     ? colorPair.target
@@ -152,7 +177,10 @@ function App() {
             </Flex>
           ))}
         </ContentContainer>
-        <AddButton onClick={handleAddButtonClick} />
+        <Flex gap={{ column: 20 }}>
+          <AddButton onClick={handleAddButtonClick} />
+          <RenameButton onClick={handleRenameButtonClick} />
+        </Flex>
       </Container>
     </Flex>
   );
