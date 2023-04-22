@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Portal } from 'components/common';
-import { ContentBox } from './Popover.style';
+import { ChildrenWrapper, ContentBox } from './Popover.style';
 
 type PopoverCloseOption = {
   contentClick: boolean;
@@ -58,13 +58,13 @@ const Popover = ({ children, content, closeOption }: PopoverProps) => {
 
   return (
     <>
-      <div
+      <ChildrenWrapper
         ref={triggerRef}
         onClick={() => setOpenPopover((prev) => !prev)}
         style={{ width: '100%' }}
       >
         {children}
-      </div>
+      </ChildrenWrapper>
       <Portal isOpen={openPopover} onDimClick={() => setOpenPopover(false)}>
         <ContentBox ref={contentRef} onClick={handleContentClick}>
           {content}
