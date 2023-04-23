@@ -1,8 +1,8 @@
-import { Flex, Popover } from 'components/common';
+import { Flex, IconButton, Popover } from 'components/common';
 import { ContentsWrapper } from './ContentContainer.style';
-import { PaletteButton } from 'components/button';
 import { useState } from 'react';
 import { ColorResult, SketchPicker } from 'react-color';
+import { BsFillPaletteFill } from 'react-icons/bs';
 
 type ContentContainerProps = {
   children: React.ReactNode;
@@ -24,7 +24,9 @@ const ContentContainer = ({ children }: ContentContainerProps) => {
             />
           }
         >
-          <PaletteButton />
+          <IconButton>
+            <BsFillPaletteFill size="20px" fill="#c7c7c7" />
+          </IconButton>
         </Popover>
         <Flex boxFill gap={{ column: 16 }}>
           {children}
