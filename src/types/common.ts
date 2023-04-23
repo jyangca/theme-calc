@@ -1,4 +1,9 @@
+export type ColorOption = {
+  color: string;
+  name: string;
+};
+
 export type ColorPairType = {
-  primary: string;
-  target: string;
+  primary: ColorOption;
+  custom: ColorOption;
 };
