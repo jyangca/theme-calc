@@ -1,4 +1,4 @@
-import { isValidHexColor } from 'utils/color';
+import { invertHex, isValidHexColor } from 'utils/color';
 import { Box } from './ColorBox.style';
 import { BiWindowClose } from 'react-icons/bi';
 import { Flex, Title } from 'components/common';
@@ -7,9 +7,18 @@ type ColorBoxProps = {
   color: string;
   height?: string;
   width?: string;
+  isNamingMode: boolean;
+  name: string;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-const ColorBox = ({ color, height, width, ...props }: ColorBoxProps) => {
+const ColorBox = ({
+  color,
+  height,
+  width,
+  isNamingMode,
+  name,
+  ...props
+}: ColorBoxProps) => {
   if (!isValidHexColor(color)) {
     return (
       <Box color="#fafafa" height={height} width={width} justify="CENTER">
@@ -22,7 +31,19 @@ const ColorBox = ({ color, height, width, ...props }: ColorBoxProps) => {
       </Box>
     );
   }
-  return <Box color={color} height={height} width={width} {...props} />;
+  return (
+    <Box
+      color={color}
+      height={height}
+      width={width}
+      justify="CENTER"
+      {...props}
+    >
+      <Title tag="h6" color={invertHex(color)}>
+        {isNamingMode ? color : name}
+      </Title>
+    </Box>
+  );
 };
 
 export default ColorBox;
