@@ -12,9 +12,10 @@ type PopoverProps = {
   content: React.ReactElement;
   children: React.ReactElement | React.ReactElement[];
   closeOption?: PopoverCloseOption;
+  disabled?: boolean;
 };
 
-const Popover = ({ children, content, closeOption }: PopoverProps) => {
+const Popover = ({ children, content, closeOption, disabled }: PopoverProps) => {
   const [openPopover, setOpenPopover] = useState<boolean>(false);
 
   const contentRef = useRef<HTMLDivElement>(null);
@@ -45,9 +46,7 @@ const Popover = ({ children, content, closeOption }: PopoverProps) => {
     if (closeOption?.keyDown) {
       document.addEventListener('keydown', () => setOpenPopover(false));
 
-      return document.removeEventListener('keydown', () =>
-        setOpenPopover(false),
-      );
+      return document.removeEventListener('keydown', () => setOpenPopover(false));
     }
   }, []);
 
@@ -69,16 +68,13 @@ const Popover = ({ children, content, closeOption }: PopoverProps) => {
     <>
       <ChildrenWrapper
         ref={triggerRef}
-        onClick={() => setOpenPopover((prev) => !prev)}
+        onClick={() => !disabled && setOpenPopover((prev) => !prev)}
+        disabled={disabled}
       >
         {children}
       </ChildrenWrapper>
       <Portal isOpen={openPopover} onDimClick={() => setOpenPopover(false)}>
-        <ContentBox
-          ref={contentRef}
-          onClick={handleContentClick}
-          style={popoverSpringProps}
-        >
+        <ContentBox ref={contentRef} onClick={handleContentClick} style={popoverSpringProps}>
           {content}
         </ContentBox>
       </Portal>
