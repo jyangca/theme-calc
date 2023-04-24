@@ -1,4 +1,4 @@
-import { ColorBox, Container, ContentContainer } from 'components';
+import { ColorBox, Container, ContentContainer, Header } from 'components';
 import { Flex, IconButton, Input, Popover, Title } from 'components/common';
 import { useEffect, useState } from 'react';
 import { ColorOption, ColorPairType } from 'types/common';
@@ -6,7 +6,9 @@ import { getColor, getColorDistance, isValidHexColor } from 'utils/color';
 import { ColorResult, SketchPicker } from 'react-color';
 import { useTransition, animated } from '@react-spring/web';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
-import { CgCheckO, CgCloseO, CgRename } from 'react-icons/cg';
+import { CgCheckO, CgRename } from 'react-icons/cg';
+import { VscJson } from 'react-icons/vsc';
+import ReactJson from 'react-json-view';
 
 function App() {
   const [primaryStandard, setPrimaryStandard] = useState<ColorOption>({
@@ -54,7 +56,13 @@ function App() {
     if (colorPairs.length >= 6) return;
     setColorPairs((prev) => [
       ...prev,
-      { primary: { ...primaryStandard }, custom: { ...customStandard } },
+      {
+        primary: {
+          name: `${primaryStandard.name}${colorPairs.length}`,
+          color: primaryStandard.color,
+        },
+        custom: { name: `${customStandard.name}${colorPairs.length}`, color: customStandard.color },
+      },
     ]);
   };
 
@@ -144,10 +152,6 @@ function App() {
     setIsNamingMode((prev) => !prev);
   };
 
-  const handleCancelRenameButtonClick = () => {
-    setIsNamingMode(false);
-  };
-
   const handleDoneRenameButtonClick = () => {
     setIsNamingMode(false);
   };
@@ -159,8 +163,26 @@ function App() {
     delay: 100,
   });
 
+  const themeJson = {
+    [customStandard.name]: {
+      [customStandard.name]: customStandard.color,
+      ...colorPairs.reduce((acc, colorPair) => {
+        (acc as Record<string, any>)[colorPair.custom.name] = colorPair.custom.color;
+        return acc;
+      }, {}),
+    },
+    [primaryStandard.name]: {
+      [primaryStandard.name]: primaryStandard.color,
+      ...colorPairs.reduce((acc, colorPair) => {
+        (acc as Record<string, any>)[colorPair.primary.name] = colorPair.primary.color;
+        return acc;
+      }, {}),
+    },
+  };
+
   return (
-    <Flex boxFill>
+    <Flex direction="COLUMN">
+      <Header />
       <Container>
         <Title tag="h1">Theme Calculator</Title>
         <Flex direction="COLUMN" gap={{ row: 6 }}>
@@ -272,19 +294,29 @@ function App() {
             <AiOutlinePlusCircle size="40px" fill="#c7c7c7" />
           </IconButton>
           {isNamingMode ? (
-            <>
-              <IconButton>
-                <CgCheckO size="40px" fill="#c7c7c7" onClick={handleDoneRenameButtonClick} />
-              </IconButton>
-              <IconButton>
-                <CgCloseO size="40px" fill="#c7c7c7" onClick={handleCancelRenameButtonClick} />
-              </IconButton>
-            </>
+            <IconButton>
+              <CgCheckO size="40px" fill="#c7c7c7" onClick={handleDoneRenameButtonClick} />
+            </IconButton>
           ) : (
             <IconButton onClick={handleRenameButtonClick}>
               <CgRename size="40px" fill="#c7c7c7" />
             </IconButton>
           )}
+          <Popover
+            content={
+              <ReactJson
+                src={themeJson}
+                theme="summerfruit:inverted"
+                style={{ padding: '1rem', borderRadius: '4px', width: '300px' }}
+                iconStyle="square"
+                displayDataTypes={false}
+              />
+            }
+          >
+            <IconButton>
+              <VscJson size="40px" fill="#c7c7c7" />
+            </IconButton>
+          </Popover>
         </Flex>
       </Container>
     </Flex>
