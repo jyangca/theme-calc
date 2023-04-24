@@ -1,4 +1,5 @@
 import { Flex, IconButton } from 'components/common';
+import { memo } from 'react';
 import { BsGithub, BsSunFill, BsMoonFill } from 'react-icons/bs';
 import { IoLogoMarkdown } from 'react-icons/io5';
 
@@ -12,12 +13,6 @@ const Header = () => {
 
   return (
     <Flex justify="END" boxFill>
-      <IconButton>
-        <BsSunFill size="30px" color="#c7c7c7" />
-      </IconButton>
-      <IconButton>
-        <BsMoonFill size="20px" color="#c7c7c7" />
-      </IconButton>
       <IconButton onClick={handleClickGithub}>
         <BsGithub size="30px" color="#c7c7c7" />
       </IconButton>
@@ -28,4 +23,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default memo(Header);
