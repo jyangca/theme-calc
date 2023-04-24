@@ -7,6 +7,7 @@ import { ColorResult, SketchPicker } from 'react-color';
 import { useTransition, animated } from '@react-spring/web';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
 import { CgCheckO, CgRename } from 'react-icons/cg';
+import { MdDeleteForever } from 'react-icons/md';
 import { VscJson } from 'react-icons/vsc';
 import ReactJson from 'react-json-view';
 
@@ -156,10 +157,17 @@ function App() {
     setIsNamingMode(false);
   };
 
+  const handleDeleteButtonClick = (index: number) => {
+    setColorPairs((prev) => {
+      const newColorPairs = [...prev];
+      newColorPairs.splice(index, 1);
+      return newColorPairs;
+    });
+  };
+
   const transition = useTransition(colorPairs, {
     from: { opacity: 0, transform: 'scale(0.9)' },
     enter: { opacity: 1, transform: 'scale(1)' },
-    leave: { opacity: 0, transform: 'scale(0.9)' },
     delay: 100,
   });
 
@@ -286,6 +294,9 @@ function App() {
                   </Title>
                 )}
               </Flex>
+              <IconButton size={35} onClick={() => handleDeleteButtonClick(index)}>
+                <MdDeleteForever size="20px" fill="#c7c7c7" />
+              </IconButton>
             </Flex>
           ))}
         </ContentContainer>
