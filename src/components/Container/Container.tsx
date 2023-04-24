@@ -5,7 +5,7 @@ type ContainerProps = {
 };
 const Container = ({ children }: ContainerProps) => {
   return (
-    <ContainerWrapper direction="COLUMN" gap={{ row: 16 }} boxFill>
+    <ContainerWrapper direction="COLUMN" gap={{ row: 12 }} boxFill>
       {children}
     </ContainerWrapper>
   );
