@@ -30,7 +30,10 @@ const Popover = ({ children, content, closeOption, disabled }: PopoverProps) => 
         const triggerRect = triggerNode.getBoundingClientRect();
         const childrenRect = contentNode.getBoundingClientRect();
 
-        const top = triggerRect.top;
+        const top =
+          triggerRect.top + contentNode.clientHeight > window.innerHeight
+            ? triggerRect.bottom - childrenRect.height - 20
+            : triggerRect.top;
         const left =
           triggerRect.right + childrenRect.width + 4 > window.innerWidth
             ? triggerRect.left - childrenRect.width - 4
