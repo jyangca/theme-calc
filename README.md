@@ -9,3 +9,7 @@ Generate new theme colors based on a user-defined theme colors.
 `getColor`: Calculates a new color that is that distance away from the primary color.
 
 The idea here is to use a user-defined theme color and calculate the distance between that color and other colors. By doing this, we can create new theme color with same rgb distance.
+
+#### Feature
+
+- Export to JSON
