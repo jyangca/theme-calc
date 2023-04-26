@@ -1,4 +1,5 @@
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/31dddf22-76b7-4884-82ed-5aeea12a3d11/Untitled.png)
+<img width="808" alt="Untitled (1)" src="https://user-images.githubusercontent.com/118745681/234607942-875fe37a-609e-40b6-89c0-7960ba142929.png">
+
 ### Theme Calculator
 
 Generate new theme colors based on a user-defined theme colors.
