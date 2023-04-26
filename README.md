@@ -1,3 +1,4 @@
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/31dddf22-76b7-4884-82ed-5aeea12a3d11/Untitled.png)
 ### Theme Calculator
 
 Generate new theme colors based on a user-defined theme colors.
